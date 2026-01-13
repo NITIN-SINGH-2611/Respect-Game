@@ -1,1 +1,0 @@
-Add onclick handler to Start Game button

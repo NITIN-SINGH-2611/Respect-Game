@@ -1046,33 +1046,6 @@ body > * {
     font-size: 2em;
 }
 
-.custom-message {
-    margin-top: 20px;
-}
-
-.custom-message label {
-    display: block;
-    margin-bottom: 8px;
-    font-weight: bold;
-    color: #333;
-}
-
-.custom-message textarea {
-    width: 100%;
-    padding: 10px;
-    border: 2px solid rgba(102, 126, 234, 0.3);
-    border-radius: 8px;
-    font-size: 1em;
-    font-family: inherit;
-    resize: vertical;
-    min-height: 80px;
-    background: rgba(15, 52, 96, 0.5);
-    color: #e0e0e0;
-}
-
-.custom-message textarea::placeholder {
-    color: rgba(224, 224, 224, 0.5);
-}
 
 .custom-message textarea:focus {
     outline: none;

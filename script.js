@@ -177,7 +177,6 @@ function openRespectModal(username) {
     targetUsername = username;
     document.getElementById('targetUser').textContent = username.charAt(0).toUpperCase() + username.slice(1);
     document.getElementById('respectModal').classList.add('show');
-    document.getElementById('respectMessage').value = '';
 }
 
 function closeRespectModal() {
@@ -186,36 +185,60 @@ function closeRespectModal() {
 }
 
 function submitRespect(type) {
-    if (!targetUsername) return;
+    if (!targetUsername) {
+        console.error('No target username set');
+        return;
+    }
+    
+    if (!currentUsername) {
+        alert('Please enter your name first!');
+        closeRespectModal();
+        return;
+    }
 
-    const message = document.getElementById('respectMessage').value.trim();
+    console.log('Submitting respect:', {
+        from: currentUsername,
+        to: targetUsername,
+        type: type
+    });
     
     // Send to server
     fetch('/api/give_respect', {
         method: 'POST',
-        headers: {'Content-Type': 'application/json'},
+        headers: {
+            'Content-Type': 'application/json'
+        },
         body: JSON.stringify({
             from: currentUsername,
             to: targetUsername,
             type: type,
-            message: message
+            message: ''
         })
     })
-    .then(response => response.json())
+    .then(response => {
+        console.log('Response status:', response.status);
+        if (!response.ok) {
+            return response.json().then(err => {
+                throw new Error(err.error || 'Server error');
+            });
+        }
+        return response.json();
+    })
     .then(data => {
+        console.log('Response data:', data);
         if (data.success) {
-            addActivity(`${currentUsername} gave ${type} to ${targetUsername}${message ? ': ' + message : ''}`, 
+            addActivity(`${currentUsername} gave ${type} to ${targetUsername}`, 
                        type === '++' ? 'respect-plus' : 'respect-minus');
             loadRespectData();
             updateLeaderboard();
             closeRespectModal();
         } else {
-            alert('Error: ' + data.error);
+            alert('Error: ' + (data.error || 'Unknown error'));
         }
     })
     .catch(error => {
-        console.error('Error:', error);
-        alert('Failed to submit respect. Please try again.');
+        console.error('Error submitting respect:', error);
+        alert('Failed to submit respect: ' + error.message + '. Make sure the server is running!');
     });
 }
 
