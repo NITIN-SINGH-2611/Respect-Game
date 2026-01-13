@@ -6,11 +6,11 @@
 
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
     background-attachment: fixed;
     min-height: 100vh;
     padding: 20px;
-    color: #333;
+    color: #e0e0e0;
     position: relative;
     overflow-x: hidden;
 }
@@ -24,9 +24,9 @@ body::before {
     width: 100%;
     height: 100%;
     background-image: 
-        radial-gradient(circle at 20% 50%, rgba(255,255,255,0.1) 0%, transparent 50%),
-        radial-gradient(circle at 80% 80%, rgba(255,255,255,0.1) 0%, transparent 50%),
-        radial-gradient(circle at 40% 20%, rgba(255,255,255,0.1) 0%, transparent 50%);
+        radial-gradient(circle at 20% 50%, rgba(102, 126, 234, 0.05) 0%, transparent 50%),
+        radial-gradient(circle at 80% 80%, rgba(118, 75, 162, 0.05) 0%, transparent 50%),
+        radial-gradient(circle at 40% 20%, rgba(102, 126, 234, 0.05) 0%, transparent 50%);
     animation: backgroundMove 20s ease-in-out infinite;
     pointer-events: none;
     z-index: 0;
@@ -135,13 +135,9 @@ body > * {
     margin-bottom: 10px;
     text-transform: uppercase;
     letter-spacing: 5px;
-    background: linear-gradient(45deg, #fff, #f0f0f0, #fff);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
+    color: #e0e0e0;
+    text-shadow: 0 0 20px rgba(102, 126, 234, 0.5), 0 0 40px rgba(118, 75, 162, 0.3);
     animation: textShine 3s ease-in-out infinite;
-    text-shadow: 0 0 30px rgba(255,255,255,0.5);
-    filter: drop-shadow(0 0 10px rgba(255,255,255,0.3));
 }
 
 @keyframes textShine {
@@ -156,14 +152,14 @@ body > * {
 
 /* User Panel */
 .user-panel {
-    background: rgba(255, 255, 255, 0.95);
+    background: rgba(26, 26, 46, 0.8);
     backdrop-filter: blur(10px);
     border-radius: 20px;
     padding: 25px;
     margin-bottom: 20px;
-    box-shadow: 0 15px 35px rgba(0,0,0,0.3), 0 5px 15px rgba(0,0,0,0.2);
+    box-shadow: 0 15px 35px rgba(0,0,0,0.5), 0 5px 15px rgba(0,0,0,0.3);
     animation: fadeIn 0.5s ease, slideDown 0.5s ease;
-    border: 1px solid rgba(255,255,255,0.3);
+    border: 1px solid rgba(102, 126, 234, 0.3);
 }
 
 @keyframes slideDown {
@@ -193,10 +189,16 @@ body > * {
     flex: 1;
     min-width: 200px;
     padding: 12px 15px;
-    border: 2px solid #e0e0e0;
+    border: 2px solid rgba(102, 126, 234, 0.3);
     border-radius: 8px;
     font-size: 1em;
     transition: border-color 0.3s;
+    background: rgba(15, 52, 96, 0.5);
+    color: #e0e0e0;
+}
+
+.current-user input::placeholder {
+    color: rgba(224, 224, 224, 0.5);
 }
 
 .current-user input:focus {
@@ -207,9 +209,11 @@ body > * {
 .user-display {
     margin-top: 15px;
     padding: 10px;
-    background: #f0f0f0;
+    background: rgba(15, 52, 96, 0.5);
     border-radius: 8px;
     font-size: 1.1em;
+    color: #e0e0e0;
+    border: 1px solid rgba(102, 126, 234, 0.3);
 }
 
 /* Buttons */
@@ -272,14 +276,19 @@ body > * {
 
 /* Command Section */
 .command-section, .activity-feed, .leaderboard-section {
-    background: rgba(255, 255, 255, 0.95);
+    background: rgba(26, 26, 46, 0.8);
     backdrop-filter: blur(10px);
     border-radius: 20px;
     padding: 30px;
-    box-shadow: 0 15px 35px rgba(0,0,0,0.3), 0 5px 15px rgba(0,0,0,0.2);
+    box-shadow: 0 15px 35px rgba(0,0,0,0.5), 0 5px 15px rgba(0,0,0,0.3);
     animation: fadeIn 0.5s ease, scaleIn 0.5s ease;
-    border: 1px solid rgba(255,255,255,0.3);
+    border: 1px solid rgba(102, 126, 234, 0.3);
     transition: transform 0.3s ease, box-shadow 0.3s ease;
+    display: none;
+}
+
+.command-section.show, .activity-feed.show, .leaderboard-section.show {
+    display: block;
 }
 
 .command-section:hover, .activity-feed:hover, .leaderboard-section:hover {
@@ -299,9 +308,10 @@ body > * {
 }
 
 .command-section h2, .activity-feed h2, .leaderboard-section h2 {
-    color: #667eea;
+    color: #8b9aff;
     margin-bottom: 15px;
     font-size: 1.5em;
+    text-shadow: 0 0 10px rgba(139, 154, 255, 0.5);
 }
 
 .command-input-wrapper {
@@ -313,18 +323,23 @@ body > * {
 #commandInput {
     flex: 1;
     padding: 18px 20px;
-    border: 3px solid #e0e0e0;
+    border: 3px solid rgba(102, 126, 234, 0.3);
     border-radius: 12px;
     font-size: 1.1em;
     transition: all 0.3s ease;
-    background: rgba(255,255,255,0.9);
+    background: rgba(15, 52, 96, 0.5);
     backdrop-filter: blur(5px);
+    color: #e0e0e0;
+}
+
+#commandInput::placeholder {
+    color: rgba(224, 224, 224, 0.5);
 }
 
 #commandInput:focus {
     outline: none;
-    border-color: #667eea;
-    box-shadow: 0 0 20px rgba(102, 126, 234, 0.3), inset 0 0 10px rgba(102, 126, 234, 0.1);
+    border-color: #8b9aff;
+    box-shadow: 0 0 20px rgba(139, 154, 255, 0.4), inset 0 0 10px rgba(139, 154, 255, 0.2);
     transform: scale(1.02);
 }
 
@@ -334,11 +349,13 @@ body > * {
 }
 
 .command-examples {
-    background: #f5f5f5;
+    background: rgba(15, 52, 96, 0.5);
     padding: 15px;
     border-radius: 8px;
     font-size: 0.9em;
     line-height: 1.8;
+    color: #e0e0e0;
+    border: 1px solid rgba(102, 126, 234, 0.3);
 }
 
 .command-examples code {
@@ -357,23 +374,25 @@ body > * {
 .activity-log {
     max-height: 400px;
     overflow-y: auto;
-    background: #f9f9f9;
+    background: rgba(15, 52, 96, 0.3);
     border-radius: 8px;
     padding: 15px;
+    border: 1px solid rgba(102, 126, 234, 0.2);
 }
 
 .activity-item {
     padding: 15px;
     margin-bottom: 12px;
-    background: rgba(255,255,255,0.9);
+    background: rgba(26, 26, 46, 0.6);
     backdrop-filter: blur(5px);
     border-radius: 12px;
-    border-left: 5px solid #667eea;
+    border-left: 5px solid #8b9aff;
     animation: slideIn 0.3s ease;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    box-shadow: 0 2px 10px rgba(0,0,0,0.3);
     transition: all 0.3s ease;
     position: relative;
     overflow: hidden;
+    color: #e0e0e0;
 }
 
 .activity-item::after {
@@ -393,23 +412,23 @@ body > * {
 }
 
 .activity-item.respect-plus {
-    border-left-color: #4CAF50;
-    background: #e8f5e9;
+    border-left-color: #66bb6a;
+    background: rgba(76, 175, 80, 0.2);
 }
 
 .activity-item.respect-minus {
-    border-left-color: #f44336;
-    background: #ffebee;
+    border-left-color: #ef5350;
+    background: rgba(244, 67, 54, 0.2);
 }
 
 .activity-item.count-check {
-    border-left-color: #2196F3;
-    background: #e3f2fd;
+    border-left-color: #64b5f6;
+    background: rgba(33, 150, 243, 0.2);
 }
 
 .activity-time {
     font-size: 0.8em;
-    color: #666;
+    color: rgba(224, 224, 224, 0.6);
     margin-bottom: 5px;
 }
 
@@ -436,12 +455,12 @@ body > * {
     align-items: center;
     padding: 20px;
     margin-bottom: 15px;
-    background: linear-gradient(135deg, rgba(255,255,255,0.9) 0%, rgba(240,240,240,0.9) 100%);
+    background: linear-gradient(135deg, rgba(26, 26, 46, 0.8) 0%, rgba(15, 52, 96, 0.6) 100%);
     border-radius: 15px;
     transition: all 0.3s ease;
     animation: slideIn 0.3s ease;
-    border: 2px solid transparent;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    border: 2px solid rgba(102, 126, 234, 0.3);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.3);
     position: relative;
     overflow: hidden;
 }
@@ -493,19 +512,19 @@ body > * {
 .leaderboard-name {
     font-size: 1.2em;
     font-weight: bold;
-    color: #333;
+    color: #e0e0e0;
 }
 
 .leaderboard-stats {
     font-size: 0.9em;
-    color: #666;
+    color: rgba(224, 224, 224, 0.7);
     margin-top: 5px;
 }
 
 .leaderboard-score {
     font-size: 1.5em;
     font-weight: bold;
-    color: #667eea;
+    color: #8b9aff;
     min-width: 80px;
     text-align: right;
 }
@@ -701,13 +720,15 @@ body > * {
 }
 
 .modal-content {
-    background: white;
+    background: rgba(26, 26, 46, 0.95);
+    backdrop-filter: blur(10px);
     border-radius: 15px;
     padding: 0;
     max-width: 500px;
     width: 90%;
-    box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+    box-shadow: 0 20px 60px rgba(0,0,0,0.5);
     animation: slideUp 0.3s ease;
+    border: 1px solid rgba(102, 126, 234, 0.3);
 }
 
 @keyframes slideUp {
@@ -748,12 +769,13 @@ body > * {
 
 .modal-body {
     padding: 30px;
+    color: #e0e0e0;
 }
 
 .modal-body p {
     margin-bottom: 20px;
     font-size: 1.1em;
-    color: #666;
+    color: #e0e0e0;
 }
 
 .respect-actions {
@@ -824,12 +846,18 @@ body > * {
 .custom-message textarea {
     width: 100%;
     padding: 10px;
-    border: 2px solid #e0e0e0;
+    border: 2px solid rgba(102, 126, 234, 0.3);
     border-radius: 8px;
     font-size: 1em;
     font-family: inherit;
     resize: vertical;
     min-height: 80px;
+    background: rgba(15, 52, 96, 0.5);
+    color: #e0e0e0;
+}
+
+.custom-message textarea::placeholder {
+    color: rgba(224, 224, 224, 0.5);
 }
 
 .custom-message textarea:focus {

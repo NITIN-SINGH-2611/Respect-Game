@@ -37,6 +37,13 @@ function setUsername() {
     document.getElementById('userDisplay').style.display = 'block';
     document.getElementById('username').disabled = true;
     document.getElementById('setUsername').disabled = true;
+    
+    // Hide username panel, show command section
+    document.querySelector('.user-panel').style.display = 'none';
+    document.querySelector('.command-section').classList.add('show');
+    document.querySelector('.activity-feed').classList.add('show');
+    document.querySelector('.leaderboard-section').classList.add('show');
+    
     document.getElementById('commandInput').disabled = false;
     document.getElementById('sendCommand').disabled = false;
     document.getElementById('commandInput').focus();

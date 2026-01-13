@@ -202,11 +202,18 @@ def get_history(username):
         return jsonify({'success': False, 'error': str(e)}), 500
 
 if __name__ == '__main__':
+    import os
+    port = int(os.environ.get('PORT', 5001))
+    
     print("="*60)
     print("Respect Game Server")
     print("="*60)
-    print("\nStarting server on http://localhost:5001")
-    print("Open your browser and navigate to the URL above")
+    print(f"\nStarting server on http://0.0.0.0:{port}")
+    print(f"Local access: http://localhost:{port}")
+    print("\nFor multiplayer:")
+    print("1. Share your IP address with friends")
+    print("2. Or deploy to Railway/Render/Heroku")
+    print("3. Or use ngrok for quick sharing")
     print("\nPress Ctrl+C to stop the server\n")
     
-    app.run(debug=True, host='0.0.0.0', port=5001, threaded=True)
+    app.run(debug=False, host='0.0.0.0', port=port, threaded=True)
