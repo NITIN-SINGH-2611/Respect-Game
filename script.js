@@ -262,12 +262,20 @@ window.submitRespect = function(type) {
     const loadingText = type === '++' ? 'Submitting Respect ++...' : 'Submitting Respect --...';
     console.log(loadingText);
     
-    // Determine API URL - try relative first, then absolute
-    const apiUrl = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' 
-        ? '/api/give_respect' 
-        : window.location.origin + '/api/give_respect';
+    // Determine API URL - use localhost:5001 for local server
+    let apiUrl;
+    if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' || window.location.port === '5001') {
+        apiUrl = '/api/give_respect';
+    } else if (window.location.hostname.includes('github.io')) {
+        // For GitHub Pages, need separate server
+        alert('Server needs to be running! Start: cd respect && python server.py');
+        apiUrl = 'http://localhost:5001/api/give_respect';
+    } else {
+        apiUrl = window.location.origin + '/api/give_respect';
+    }
     
     console.log('Calling API:', apiUrl);
+    console.log('Current location:', window.location.href);
     
     // Send to server
     fetch(apiUrl, {
