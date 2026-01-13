@@ -69,15 +69,28 @@ def set_username():
     except Exception as e:
         return jsonify({'success': False, 'error': str(e)}), 500
 
-@app.route('/api/give_respect', methods=['POST'])
+@app.route('/api/give_respect', methods=['POST', 'OPTIONS'])
 def give_respect():
     """Give respect to a user"""
+    # Handle CORS preflight
+    if request.method == 'OPTIONS':
+        response = jsonify({'success': True})
+        response.headers.add('Access-Control-Allow-Origin', '*')
+        response.headers.add('Access-Control-Allow-Headers', 'Content-Type')
+        response.headers.add('Access-Control-Allow-Methods', 'POST, OPTIONS')
+        return response
+    
     try:
         data = request.json
+        if not data:
+            return jsonify({'success': False, 'error': 'No data received'}), 400
+            
         from_user = data.get('from', '').strip().lower()
         to_user = data.get('to', '').strip().lower()
         respect_type = data.get('type', '++')
         message = data.get('message', '').strip()
+        
+        print(f"Received respect: from={from_user}, to={to_user}, type={respect_type}")
         
         if not from_user or not to_user:
             return jsonify({'success': False, 'error': 'Both from and to usernames required'}), 400
@@ -118,17 +131,26 @@ def give_respect():
         # Save database
         save_database(db)
         
-        return jsonify({
+        print(f"Respect saved: {to_user} now has {user_data.get('plus', 0)} plus and {user_data.get('minus', 0)} minus")
+        
+        response = jsonify({
             'success': True,
             'message': f'{from_user} gave {respect_type} to {to_user}',
             'count': {
-                'plus': user_data['plus'],
-                'minus': user_data['minus'],
-                'total': user_data['plus'] - user_data['minus']
+                'plus': user_data.get('plus', 0),
+                'minus': user_data.get('minus', 0),
+                'total': user_data.get('plus', 0) - user_data.get('minus', 0)
             }
         })
+        response.headers.add('Access-Control-Allow-Origin', '*')
+        return response
     except Exception as e:
-        return jsonify({'success': False, 'error': str(e)}), 500
+        print(f"Error in give_respect: {str(e)}")
+        import traceback
+        traceback.print_exc()
+        response = jsonify({'success': False, 'error': str(e)})
+        response.headers.add('Access-Control-Allow-Origin', '*')
+        return response, 500
 
 @app.route('/api/get_respect_count/<username>')
 def get_respect_count(username):

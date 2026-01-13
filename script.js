@@ -184,9 +184,13 @@ function closeRespectModal() {
     targetUsername = '';
 }
 
-function submitRespect(type) {
+// Make submitRespect globally accessible
+window.submitRespect = function(type) {
+    console.log('submitRespect called with type:', type);
+    
     if (!targetUsername) {
         console.error('No target username set');
+        alert('Error: No target user selected');
         return;
     }
     
@@ -202,48 +206,95 @@ function submitRespect(type) {
         type: type
     });
     
+    // Disable buttons to prevent double-clicking
+    const buttons = document.querySelectorAll('.btn-respect');
+    buttons.forEach(btn => btn.disabled = true);
+    
+    // Show loading state
+    const loadingText = type === '++' ? 'Submitting Respect ++...' : 'Submitting Respect --...';
+    console.log(loadingText);
+    
+    // Determine API URL - try relative first, then absolute
+    const apiUrl = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' 
+        ? '/api/give_respect' 
+        : window.location.origin + '/api/give_respect';
+    
+    console.log('Calling API:', apiUrl);
+    
     // Send to server
-    fetch('/api/give_respect', {
+    fetch(apiUrl, {
         method: 'POST',
         headers: {
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
         },
         body: JSON.stringify({
             from: currentUsername,
             to: targetUsername,
             type: type,
             message: ''
-        })
+        }),
+        mode: 'cors'
     })
     .then(response => {
-        console.log('Response status:', response.status);
+        console.log('Response received, status:', response.status);
         if (!response.ok) {
-            return response.json().then(err => {
-                throw new Error(err.error || 'Server error');
+            return response.text().then(text => {
+                console.error('Error response:', text);
+                let errorData;
+                try {
+                    errorData = JSON.parse(text);
+                } catch {
+                    errorData = { error: text || 'Server error' };
+                }
+                throw new Error(errorData.error || 'Server error');
             });
         }
         return response.json();
     })
     .then(data => {
-        console.log('Response data:', data);
+        console.log('Success! Response data:', data);
         if (data.success) {
-            addActivity(`${currentUsername} gave ${type} to ${targetUsername}`, 
+            // Success message
+            addActivity(`✅ ${currentUsername} gave ${type} to ${targetUsername}`, 
                        type === '++' ? 'respect-plus' : 'respect-minus');
+            
+            // Reload data and update UI
             loadRespectData();
             updateLeaderboard();
+            
+            // Close modal
             closeRespectModal();
+            
+            // Show success feedback
+            console.log('Respect submitted successfully!');
         } else {
             alert('Error: ' + (data.error || 'Unknown error'));
+            buttons.forEach(btn => btn.disabled = false);
         }
     })
     .catch(error => {
         console.error('Error submitting respect:', error);
-        alert('Failed to submit respect: ' + error.message + '. Make sure the server is running!');
+        console.error('Error details:', error.stack);
+        
+        // Re-enable buttons
+        buttons.forEach(btn => btn.disabled = false);
+        
+        // Check if it's a network error
+        if (error.message.includes('Failed to fetch') || error.message.includes('NetworkError')) {
+            alert('Cannot connect to server. Please make sure the server is running on port 5001.\n\nTo start: cd respect && python server.py');
+        } else {
+            alert('Failed to submit respect: ' + error.message);
+        }
     });
-}
+};
 
 function showRespectCount(username) {
-    fetch(`/api/get_respect_count/${username}`)
+    const apiUrl = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' 
+        ? `/api/get_respect_count/${username}` 
+        : `${window.location.origin}/api/get_respect_count/${username}`;
+    
+    fetch(apiUrl)
         .then(response => response.json())
         .then(data => {
             if (data.success) {
@@ -286,7 +337,11 @@ function closeRespectBubble() {
 }
 
 function loadRespectData() {
-    fetch('/api/get_all_respects')
+    const apiUrl = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' 
+        ? '/api/get_all_respects' 
+        : window.location.origin + '/api/get_all_respects';
+    
+    fetch(apiUrl)
         .then(response => response.json())
         .then(data => {
             if (data.success) {
