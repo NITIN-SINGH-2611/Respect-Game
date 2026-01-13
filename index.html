@@ -8,22 +8,27 @@
 </head>
 <body>
     <div class="game-container">
-        <!-- Header -->
-        <header class="game-header">
-            <div class="header-glow"></div>
-            <h1>🎮 RESPECT GAME 🎮</h1>
-            <p class="subtitle">Tag, Respect, and Compete!</p>
-            <div class="header-particles">
-                <span class="particle">✨</span>
-                <span class="particle">⭐</span>
-                <span class="particle">💫</span>
-                <span class="particle">✨</span>
-                <span class="particle">⭐</span>
-            </div>
-        </header>
+        <!-- Landing Page -->
+        <div id="landingPage" class="landing-page">
+            <header class="game-header">
+                <div class="header-glow"></div>
+                <h1>🎮 RESPECT GAME 🎮</h1>
+                <p class="subtitle">Tag, Respect, and Compete!</p>
+                <div class="header-particles">
+                    <span class="particle">✨</span>
+                    <span class="particle">⭐</span>
+                    <span class="particle">💫</span>
+                    <span class="particle">✨</span>
+                    <span class="particle">⭐</span>
+                </div>
+                <button id="startGameBtn" class="btn-start-game">Start Game</button>
+            </header>
+        </div>
 
-        <!-- User Panel -->
-        <div class="user-panel">
+        <!-- Game Content (Hidden Initially) -->
+        <div id="gameContent" class="game-content" style="display: none;">
+            <!-- User Panel -->
+            <div class="user-panel">
             <div class="current-user">
                 <label for="username">Your Name:</label>
                 <input type="text" id="username" placeholder="Enter your name" maxlength="20">
@@ -66,6 +71,7 @@
                     <div class="no-data">No players yet</div>
                 </div>
             </div>
+        </div>
         </div>
 
         <!-- Respect Count Bubble (Hidden by default) -->

@@ -47,15 +47,73 @@ body > * {
     margin: 0 auto;
 }
 
+/* Landing Page */
+.landing-page {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+}
+
+.game-content {
+    animation: fadeIn 0.5s ease;
+}
+
+.btn-start-game {
+    margin-top: 40px;
+    padding: 20px 60px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border: none;
+    border-radius: 20px;
+    font-size: 1.5em;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 10px 30px rgba(102, 126, 234, 0.6), 0 0 30px rgba(102, 126, 234, 0.4);
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    position: relative;
+    overflow: hidden;
+}
+
+.btn-start-game::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.3);
+    transform: translate(-50%, -50%);
+    transition: width 0.6s, height 0.6s;
+}
+
+.btn-start-game:hover::before {
+    width: 400px;
+    height: 400px;
+}
+
+.btn-start-game:hover {
+    transform: translateY(-5px) scale(1.05);
+    box-shadow: 0 15px 40px rgba(102, 126, 234, 0.8), 0 0 40px rgba(102, 126, 234, 0.6);
+}
+
+.btn-start-game:active {
+    transform: translateY(-2px) scale(1.02);
+}
+
 /* Header */
 .game-header {
     text-align: center;
     color: white;
-    margin-bottom: 40px;
+    margin-bottom: 0;
     text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
     animation: fadeInDown 0.5s ease;
     position: relative;
-    padding: 30px 0;
+    padding: 20px 0;
 }
 
 .header-glow {

@@ -9,6 +9,12 @@ document.addEventListener('DOMContentLoaded', function() {
     setupEventListeners();
     loadRespectData();
     updateLeaderboard();
+    
+    // Setup Start Game button
+    const startGameBtn = document.getElementById('startGameBtn');
+    if (startGameBtn) {
+        startGameBtn.addEventListener('click', startGame);
+    }
 });
 
 function setupEventListeners() {
@@ -23,6 +29,31 @@ function setupEventListeners() {
     document.getElementById('commandInput').addEventListener('keypress', function(e) {
         if (e.key === 'Enter') processCommand();
     });
+}
+
+function startGame() {
+    const landingPage = document.getElementById('landingPage');
+    const gameContent = document.getElementById('gameContent');
+    
+    // Fade out landing page
+    landingPage.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+    landingPage.style.opacity = '0';
+    landingPage.style.transform = 'scale(0.95)';
+    
+    setTimeout(() => {
+        landingPage.style.display = 'none';
+        
+        // Show game content with animation
+        gameContent.style.display = 'block';
+        gameContent.style.opacity = '0';
+        gameContent.style.transform = 'scale(0.95)';
+        
+        setTimeout(() => {
+            gameContent.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+            gameContent.style.opacity = '1';
+            gameContent.style.transform = 'scale(1)';
+        }, 50);
+    }, 500);
 }
 
 function setUsername() {
