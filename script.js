@@ -39,7 +39,8 @@ function setupEventListeners() {
     });
 }
 
-function startGame() {
+// Make startGame globally accessible
+window.startGame = function() {
     console.log('startGame function called!');
     const landingPage = document.getElementById('landingPage');
     const gameContent = document.getElementById('gameContent');
@@ -82,7 +83,7 @@ function startGame() {
             console.log('Game content should now be visible!');
         }, 50);
     }, 600);
-}
+};
 
 function setUsername() {
     const username = document.getElementById('username').value.trim();

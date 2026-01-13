@@ -1,1 +1,0 @@
-Center landing page and fix Start Game button functionality
