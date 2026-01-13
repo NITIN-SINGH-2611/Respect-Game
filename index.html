@@ -111,11 +111,11 @@
                 <div class="modal-body">
                     <p>Choose your action:</p>
                     <div class="respect-actions">
-                        <button class="btn-respect btn-respect-plus" onclick="submitRespect('++')">
+                        <button id="respectPlusBtn" class="btn-respect btn-respect-plus" onclick="submitRespect('++'); return false;">
                             <span class="icon">👍</span>
                             <span>Respect ++</span>
                         </button>
-                        <button class="btn-respect btn-respect-minus" onclick="submitRespect('--')">
+                        <button id="respectMinusBtn" class="btn-respect btn-respect-minus" onclick="submitRespect('--'); return false;">
                             <span class="icon">👎</span>
                             <span>Respect --</span>
                         </button>

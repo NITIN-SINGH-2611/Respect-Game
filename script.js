@@ -174,19 +174,65 @@ function processCommand() {
 }
 
 function openRespectModal(username) {
+    console.log('Opening respect modal for:', username);
     targetUsername = username;
-    document.getElementById('targetUser').textContent = username.charAt(0).toUpperCase() + username.slice(1);
-    document.getElementById('respectModal').classList.add('show');
+    const modal = document.getElementById('respectModal');
+    const targetUserEl = document.getElementById('targetUser');
+    
+    if (!modal) {
+        console.error('Respect modal not found!');
+        return;
+    }
+    
+    if (targetUserEl) {
+        targetUserEl.textContent = username.charAt(0).toUpperCase() + username.slice(1);
+    }
+    
+    modal.classList.add('show');
+    
+    // Add event listeners to buttons directly
+    const plusBtn = document.querySelector('.btn-respect-plus');
+    const minusBtn = document.querySelector('.btn-respect-minus');
+    
+    if (plusBtn) {
+        plusBtn.onclick = function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            console.log('Plus button clicked directly');
+            submitRespect('++');
+        };
+    }
+    
+    if (minusBtn) {
+        minusBtn.onclick = function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            console.log('Minus button clicked directly');
+            submitRespect('--');
+        };
+    }
+    
+    console.log('Modal should now be visible');
 }
 
 function closeRespectModal() {
-    document.getElementById('respectModal').classList.remove('show');
+    const modal = document.getElementById('respectModal');
+    if (modal) {
+        modal.classList.remove('show');
+    }
     targetUsername = '';
+    console.log('Modal closed');
 }
+
+// Make closeRespectModal globally accessible
+window.closeRespectModal = closeRespectModal;
 
 // Make submitRespect globally accessible
 window.submitRespect = function(type) {
-    console.log('submitRespect called with type:', type);
+    console.log('=== submitRespect called ===');
+    console.log('Type:', type);
+    console.log('Current username:', currentUsername);
+    console.log('Target username:', targetUsername);
     
     if (!targetUsername) {
         console.error('No target username set');
@@ -207,8 +253,10 @@ window.submitRespect = function(type) {
     });
     
     // Disable buttons to prevent double-clicking
-    const buttons = document.querySelectorAll('.btn-respect');
-    buttons.forEach(btn => btn.disabled = true);
+    const plusBtn = document.getElementById('respectPlusBtn');
+    const minusBtn = document.getElementById('respectMinusBtn');
+    if (plusBtn) plusBtn.disabled = true;
+    if (minusBtn) minusBtn.disabled = true;
     
     // Show loading state
     const loadingText = type === '++' ? 'Submitting Respect ++...' : 'Submitting Respect --...';
@@ -270,7 +318,8 @@ window.submitRespect = function(type) {
             console.log('Respect submitted successfully!');
         } else {
             alert('Error: ' + (data.error || 'Unknown error'));
-            buttons.forEach(btn => btn.disabled = false);
+            if (plusBtn) plusBtn.disabled = false;
+            if (minusBtn) minusBtn.disabled = false;
         }
     })
     .catch(error => {
@@ -278,7 +327,8 @@ window.submitRespect = function(type) {
         console.error('Error details:', error.stack);
         
         // Re-enable buttons
-        buttons.forEach(btn => btn.disabled = false);
+        if (plusBtn) plusBtn.disabled = false;
+        if (minusBtn) minusBtn.disabled = false;
         
         // Check if it's a network error
         if (error.message.includes('Failed to fetch') || error.message.includes('NetworkError')) {

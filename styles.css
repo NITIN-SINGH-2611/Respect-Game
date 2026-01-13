@@ -923,14 +923,16 @@ body > * {
     width: 100%;
     height: 100%;
     background: rgba(0,0,0,0.7);
-    z-index: 999;
+    z-index: 9999;
     animation: fadeIn 0.3s ease;
+    pointer-events: none;
 }
 
 .modal.show {
     display: flex;
     align-items: center;
     justify-content: center;
+    pointer-events: all;
 }
 
 .modal-content {
@@ -943,6 +945,9 @@ body > * {
     box-shadow: 0 20px 60px rgba(0,0,0,0.5);
     animation: slideUp 0.3s ease;
     border: 1px solid rgba(102, 126, 234, 0.3);
+    position: relative;
+    z-index: 10000;
+    pointer-events: all;
 }
 
 @keyframes slideUp {
@@ -1011,6 +1016,15 @@ body > * {
     flex-direction: column;
     align-items: center;
     gap: 10px;
+    position: relative;
+    z-index: 10001;
+    pointer-events: all;
+}
+
+.btn-respect:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    pointer-events: none;
 }
 
 .btn-respect-plus {

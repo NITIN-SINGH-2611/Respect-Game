@@ -1,0 +1,1 @@
+Fix button clicks and modal interaction
