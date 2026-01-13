@@ -1,5 +1,7 @@
-# Database
-respect_db.json
+# Database - Count directory (local storage, not visible in frontend)
+Count/
+*.json
+!package.json
 
 # Python
 __pycache__/

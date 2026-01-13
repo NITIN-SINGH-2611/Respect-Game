@@ -348,23 +348,37 @@ window.submitRespect = function(type) {
 };
 
 function showRespectCount(username) {
+    console.log(`Fetching respect count from Count database for: ${username}`);
+    
     const apiUrl = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' 
         ? `/api/get_respect_count/${username}` 
         : `${window.location.origin}/api/get_respect_count/${username}`;
     
+    console.log('API URL:', apiUrl);
+    
     fetch(apiUrl)
-        .then(response => response.json())
+        .then(response => {
+            console.log('Response status:', response.status);
+            if (!response.ok) {
+                return response.json().then(err => {
+                    throw new Error(err.error || 'Failed to fetch');
+                });
+            }
+            return response.json();
+        })
         .then(data => {
+            console.log('Respect count data received:', data);
             if (data.success) {
+                console.log(`Retrieved from Count database - ${username}:`, data.count);
                 displayRespectBubble(username, data.count);
-                addActivity(`Checked respect count for ${username}`, 'count-check');
+                addActivity(`📊 Retrieved count from Count database for ${username}`, 'count-check');
             } else {
-                addActivity(`User ${username} not found`, 'error');
+                addActivity(`User ${username} not found in Count database`, 'error');
             }
         })
         .catch(error => {
-            console.error('Error:', error);
-            addActivity('Failed to get respect count', 'error');
+            console.error('Error fetching respect count:', error);
+            addActivity('Failed to get respect count from Count database: ' + error.message, 'error');
         });
 }
 

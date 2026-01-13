@@ -12,23 +12,42 @@ from flask_cors import CORS
 app = Flask(__name__, static_folder='.')
 CORS(app)
 
-# Database file
-DB_FILE = 'respect_db.json'
+# Database file - Local storage (not visible in frontend)
+DB_FILE = 'Count/respect_data.json'
+
+def ensure_db_directory():
+    """Ensure the Count directory exists"""
+    db_dir = os.path.dirname(DB_FILE)
+    if db_dir and not os.path.exists(db_dir):
+        os.makedirs(db_dir, exist_ok=True)
+        print(f"Created database directory: {db_dir}")
 
 def load_database():
-    """Load respect data from JSON file"""
+    """Load respect data from JSON file in Count directory"""
+    ensure_db_directory()
     if os.path.exists(DB_FILE):
         try:
             with open(DB_FILE, 'r', encoding='utf-8') as f:
-                return json.load(f)
-        except:
+                data = json.load(f)
+                print(f"Loaded database from {DB_FILE}")
+                return data
+        except Exception as e:
+            print(f"Error loading database: {e}")
             return {}
-    return {}
+    else:
+        print(f"Database file not found, creating new one: {DB_FILE}")
+        return {}
 
 def save_database(data):
-    """Save respect data to JSON file"""
-    with open(DB_FILE, 'w', encoding='utf-8') as f:
-        json.dump(data, f, indent=2, ensure_ascii=False)
+    """Save respect data to JSON file in Count directory"""
+    ensure_db_directory()
+    try:
+        with open(DB_FILE, 'w', encoding='utf-8') as f:
+            json.dump(data, f, indent=2, ensure_ascii=False)
+        print(f"Database saved to {DB_FILE}")
+    except Exception as e:
+        print(f"Error saving database: {e}")
+        raise
 
 def get_user_data(username, db):
     """Get or create user data"""
@@ -101,17 +120,23 @@ def give_respect():
         if respect_type not in ['++', '--']:
             return jsonify({'success': False, 'error': 'Invalid respect type'}), 400
         
-        # Load database
+        # Load database from Count directory
         db = load_database()
+        print(f"Database loaded from Count directory")
         
         # Get user data
         user_data = get_user_data(to_user, db)
         
-        # Update counts
+        # Update counts in Count database
+        old_plus = user_data.get('plus', 0)
+        old_minus = user_data.get('minus', 0)
+        
         if respect_type == '++':
-            user_data['plus'] = user_data.get('plus', 0) + 1
+            user_data['plus'] = old_plus + 1
+            print(f"Updated {to_user} in Count: Plus {old_plus} -> {user_data['plus']}")
         else:
-            user_data['minus'] = user_data.get('minus', 0) + 1
+            user_data['minus'] = old_minus + 1
+            print(f"Updated {to_user} in Count: Minus {old_minus} -> {user_data['minus']}")
         
         # Add to history
         if 'history' not in user_data:
@@ -128,10 +153,15 @@ def give_respect():
         if len(user_data['history']) > 100:
             user_data['history'] = user_data['history'][-100:]
         
-        # Save database
+        # Save database to Count directory
         save_database(db)
         
-        print(f"Respect saved: {to_user} now has {user_data.get('plus', 0)} plus and {user_data.get('minus', 0)} minus")
+        plus_count = user_data.get('plus', 0)
+        minus_count = user_data.get('minus', 0)
+        print(f"✅ Respect saved to Count database:")
+        print(f"   User: {to_user}")
+        print(f"   Plus: {plus_count}, Minus: {minus_count}, Total: {plus_count - minus_count}")
+        print(f"   Saved in: {DB_FILE}")
         
         response = jsonify({
             'success': True,
