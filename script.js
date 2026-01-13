@@ -6,18 +6,23 @@ let respectData = {};
 
 // Initialize
 document.addEventListener('DOMContentLoaded', function() {
+    // Setup Start Game button FIRST
+    const startGameBtn = document.getElementById('startGameBtn');
+    if (startGameBtn) {
+        console.log('Start Game button found, adding event listener');
+        startGameBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            console.log('Start Game button clicked!');
+            startGame();
+        });
+    } else {
+        console.error('Start Game button not found!');
+    }
+    
     setupEventListeners();
     loadRespectData();
     updateLeaderboard();
-    
-    // Setup Start Game button
-    const startGameBtn = document.getElementById('startGameBtn');
-    if (startGameBtn) {
-        startGameBtn.addEventListener('click', function(e) {
-            e.preventDefault();
-            startGame();
-        });
-    }
 });
 
 function setupEventListeners() {
@@ -35,14 +40,23 @@ function setupEventListeners() {
 }
 
 function startGame() {
-    console.log('Start Game clicked!');
+    console.log('startGame function called!');
     const landingPage = document.getElementById('landingPage');
     const gameContent = document.getElementById('gameContent');
     
-    if (!landingPage || !gameContent) {
-        console.error('Landing page or game content not found!');
+    if (!landingPage) {
+        console.error('Landing page not found!');
+        alert('Landing page element not found');
         return;
     }
+    
+    if (!gameContent) {
+        console.error('Game content not found!');
+        alert('Game content element not found');
+        return;
+    }
+    
+    console.log('Elements found, starting transition...');
     
     // Fade out landing page
     landingPage.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
@@ -50,6 +64,7 @@ function startGame() {
     landingPage.style.transform = 'scale(0.9)';
     
     setTimeout(() => {
+        console.log('Hiding landing page, showing game content...');
         landingPage.style.display = 'none';
         
         // Show game content with animation
@@ -58,12 +73,13 @@ function startGame() {
         gameContent.style.transform = 'translateY(20px)';
         
         // Force reflow
-        gameContent.offsetHeight;
+        void gameContent.offsetHeight;
         
         setTimeout(() => {
             gameContent.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
             gameContent.style.opacity = '1';
             gameContent.style.transform = 'translateY(0)';
+            console.log('Game content should now be visible!');
         }, 50);
     }, 600);
 }

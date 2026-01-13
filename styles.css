@@ -56,6 +56,7 @@ body > * {
     padding: 20px;
     position: relative;
     overflow: hidden;
+    width: 100%;
 }
 
 .landing-content {
@@ -63,6 +64,13 @@ body > * {
     z-index: 10;
     position: relative;
     animation: fadeIn 1s ease;
+    width: 100%;
+    max-width: 900px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
 }
 
 .game-controllers {
@@ -70,9 +78,10 @@ body > * {
     justify-content: space-between;
     align-items: center;
     width: 100%;
-    max-width: 800px;
-    margin: 0 auto 30px;
+    max-width: 700px;
+    margin: 0 auto 40px;
     position: relative;
+    padding: 0 20px;
 }
 
 .controller-icon {
