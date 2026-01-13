@@ -133,14 +133,13 @@ function setUsername() {
 
     addActivity(`🎉 Welcome ${username}! You're now in the game.`, 'info');
     
-    // Save to server
-    fetch('/api/set_username', {
-        method: 'POST',
-        headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify({username: username})
-    }).catch(err => {
-        console.error('Error setting username:', err);
-    });
+    // Initialize user in Count database
+    try {
+        respectDB.getUserData(username.toLowerCase());
+        console.log(`User ${username} initialized in Count database`);
+    } catch (err) {
+        console.error('Error initializing user:', err);
+    }
 }
 
 function processCommand() {
@@ -246,7 +245,7 @@ window.submitRespect = function(type) {
         return;
     }
 
-    console.log('Submitting respect:', {
+    console.log('Submitting respect to Count database:', {
         from: currentUsername,
         to: targetUsername,
         type: type
@@ -258,128 +257,52 @@ window.submitRespect = function(type) {
     if (plusBtn) plusBtn.disabled = true;
     if (minusBtn) minusBtn.disabled = true;
     
-    // Show loading state
-    const loadingText = type === '++' ? 'Submitting Respect ++...' : 'Submitting Respect --...';
-    console.log(loadingText);
-    
-    // Determine API URL - use localhost:5001 for local server
-    let apiUrl;
-    if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' || window.location.port === '5001') {
-        apiUrl = '/api/give_respect';
-    } else if (window.location.hostname.includes('github.io')) {
-        // For GitHub Pages, need separate server
-        alert('Server needs to be running! Start: cd respect && python server.py');
-        apiUrl = 'http://localhost:5001/api/give_respect';
-    } else {
-        apiUrl = window.location.origin + '/api/give_respect';
-    }
-    
-    console.log('Calling API:', apiUrl);
-    console.log('Current location:', window.location.href);
-    
-    // Send to server
-    fetch(apiUrl, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'Accept': 'application/json'
-        },
-        body: JSON.stringify({
-            from: currentUsername,
-            to: targetUsername,
-            type: type,
-            message: ''
-        }),
-        mode: 'cors'
-    })
-    .then(response => {
-        console.log('Response received, status:', response.status);
-        if (!response.ok) {
-            return response.text().then(text => {
-                console.error('Error response:', text);
-                let errorData;
-                try {
-                    errorData = JSON.parse(text);
-                } catch {
-                    errorData = { error: text || 'Server error' };
-                }
-                throw new Error(errorData.error || 'Server error');
-            });
-        }
-        return response.json();
-    })
-    .then(data => {
-        console.log('Success! Response data:', data);
-        if (data.success) {
-            // Success message
-            addActivity(`✅ ${currentUsername} gave ${type} to ${targetUsername}`, 
-                       type === '++' ? 'respect-plus' : 'respect-minus');
-            
-            // Reload data and update UI
-            loadRespectData();
-            updateLeaderboard();
-            
-            // Close modal
-            closeRespectModal();
-            
-            // Show success feedback
-            console.log('Respect submitted successfully!');
-        } else {
-            alert('Error: ' + (data.error || 'Unknown error'));
-            if (plusBtn) plusBtn.disabled = false;
-            if (minusBtn) minusBtn.disabled = false;
-        }
-    })
-    .catch(error => {
+    try {
+        // Save directly to Count database (localStorage)
+        const count = respectDB.giveRespect(currentUsername, targetUsername, type);
+        
+        console.log('✅ Respect saved to Count database:', count);
+        
+        // Success message
+        addActivity(`✅ ${currentUsername} gave ${type} to ${targetUsername}`, 
+                   type === '++' ? 'respect-plus' : 'respect-minus');
+        
+        // Reload data and update UI
+        loadRespectData();
+        updateLeaderboard();
+        
+        // Close modal
+        closeRespectModal();
+        
+        console.log('Respect submitted successfully to Count database!');
+    } catch (error) {
         console.error('Error submitting respect:', error);
-        console.error('Error details:', error.stack);
+        alert('Failed to submit respect: ' + error.message);
         
         // Re-enable buttons
         if (plusBtn) plusBtn.disabled = false;
         if (minusBtn) minusBtn.disabled = false;
-        
-        // Check if it's a network error
-        if (error.message.includes('Failed to fetch') || error.message.includes('NetworkError')) {
-            alert('Cannot connect to server. Please make sure the server is running on port 5001.\n\nTo start: cd respect && python server.py');
-        } else {
-            alert('Failed to submit respect: ' + error.message);
-        }
-    });
+    }
 };
 
 function showRespectCount(username) {
     console.log(`Fetching respect count from Count database for: ${username}`);
     
-    const apiUrl = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' 
-        ? `/api/get_respect_count/${username}` 
-        : `${window.location.origin}/api/get_respect_count/${username}`;
-    
-    console.log('API URL:', apiUrl);
-    
-    fetch(apiUrl)
-        .then(response => {
-            console.log('Response status:', response.status);
-            if (!response.ok) {
-                return response.json().then(err => {
-                    throw new Error(err.error || 'Failed to fetch');
-                });
-            }
-            return response.json();
-        })
-        .then(data => {
-            console.log('Respect count data received:', data);
-            if (data.success) {
-                console.log(`Retrieved from Count database - ${username}:`, data.count);
-                displayRespectBubble(username, data.count);
-                addActivity(`📊 Retrieved count from Count database for ${username}`, 'count-check');
-            } else {
-                addActivity(`User ${username} not found in Count database`, 'error');
-            }
-        })
-        .catch(error => {
-            console.error('Error fetching respect count:', error);
-            addActivity('Failed to get respect count from Count database: ' + error.message, 'error');
-        });
+    try {
+        // Get data directly from Count database (localStorage)
+        const count = respectDB.getRespectCount(username);
+        
+        if (count !== null) {
+            console.log(`✅ Retrieved from Count database - ${username}:`, count);
+            displayRespectBubble(username, count);
+            addActivity(`📊 Retrieved count from Count database for ${username}`, 'count-check');
+        } else {
+            addActivity(`User ${username} not found in Count database`, 'error');
+        }
+    } catch (error) {
+        console.error('Error fetching respect count:', error);
+        addActivity('Failed to get respect count from Count database: ' + error.message, 'error');
+    }
 }
 
 function displayRespectBubble(username, count) {
@@ -409,21 +332,14 @@ function closeRespectBubble() {
 }
 
 function loadRespectData() {
-    const apiUrl = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' 
-        ? '/api/get_all_respects' 
-        : window.location.origin + '/api/get_all_respects';
-    
-    fetch(apiUrl)
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                respectData = data.respects;
-                updateLeaderboard();
-            }
-        })
-        .catch(error => {
-            console.error('Error loading respect data:', error);
-        });
+    try {
+        // Load directly from Count database (localStorage)
+        respectData = respectDB.getAllRespects();
+        console.log('Loaded respect data from Count database:', respectData);
+        updateLeaderboard();
+    } catch (error) {
+        console.error('Error loading respect data:', error);
+    }
 }
 
 function updateLeaderboard() {
