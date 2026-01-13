@@ -1,0 +1,1 @@
+Enhanced styling and fixed Join Game button

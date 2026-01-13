@@ -33,28 +33,53 @@ function setUsername() {
     }
 
     currentUsername = username.toLowerCase();
-    document.getElementById('currentUser').textContent = username;
-    document.getElementById('userDisplay').style.display = 'block';
+    
+    // Disable username input
     document.getElementById('username').disabled = true;
     document.getElementById('setUsername').disabled = true;
+    document.getElementById('setUsername').textContent = 'Joined ✓';
+    document.getElementById('setUsername').style.background = 'linear-gradient(135deg, #4CAF50 0%, #45a049 100%)';
     
-    // Hide username panel, show command section
-    document.querySelector('.user-panel').style.display = 'none';
-    document.querySelector('.command-section').classList.add('show');
-    document.querySelector('.activity-feed').classList.add('show');
-    document.querySelector('.leaderboard-section').classList.add('show');
+    // Hide username panel with animation
+    const userPanel = document.querySelector('.user-panel');
+    userPanel.style.transition = 'opacity 0.5s, transform 0.5s';
+    userPanel.style.opacity = '0';
+    userPanel.style.transform = 'translateY(-20px)';
     
-    document.getElementById('commandInput').disabled = false;
-    document.getElementById('sendCommand').disabled = false;
-    document.getElementById('commandInput').focus();
+    setTimeout(() => {
+        userPanel.style.display = 'none';
+        
+        // Show game sections
+        const commandSection = document.querySelector('.command-section');
+        const activityFeed = document.querySelector('.activity-feed');
+        const leaderboardSection = document.querySelector('.leaderboard-section');
+        
+        commandSection.style.display = 'block';
+        activityFeed.style.display = 'block';
+        leaderboardSection.style.display = 'block';
+        
+        // Add show class for animations
+        setTimeout(() => {
+            commandSection.classList.add('show');
+            activityFeed.classList.add('show');
+            leaderboardSection.classList.add('show');
+        }, 50);
+        
+        // Enable command input
+        document.getElementById('commandInput').disabled = false;
+        document.getElementById('sendCommand').disabled = false;
+        document.getElementById('commandInput').focus();
+    }, 500);
 
-    addActivity(`Welcome ${username}! You're now in the game.`, 'info');
+    addActivity(`🎉 Welcome ${username}! You're now in the game.`, 'info');
     
     // Save to server
     fetch('/api/set_username', {
         method: 'POST',
         headers: {'Content-Type': 'application/json'},
         body: JSON.stringify({username: username})
+    }).catch(err => {
+        console.error('Error setting username:', err);
     });
 }
 
