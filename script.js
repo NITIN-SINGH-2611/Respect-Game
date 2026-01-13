@@ -312,19 +312,21 @@ function displayRespectBubble(username, count) {
     const plusEl = bubble.querySelector('.breakdown-value.positive');
     const minusEl = bubble.querySelector('.breakdown-value.negative');
 
-    usernameEl.textContent = username.charAt(0).toUpperCase() + username.slice(1);
-    countEl.textContent = count.total;
-    plusEl.textContent = count.plus || 0;
-    minusEl.textContent = count.minus || 0;
+    if (usernameEl) usernameEl.textContent = username.charAt(0).toUpperCase() + username.slice(1);
+    if (countEl) countEl.textContent = count.total || 0;
+    if (plusEl) plusEl.textContent = count.plus || 0;
+    if (minusEl) minusEl.textContent = count.minus || 0;
 
     // Animate
     bubble.classList.add('show');
     
     // Add pulse animation to number
-    countEl.style.animation = 'none';
-    setTimeout(() => {
-        countEl.style.animation = 'numberPulse 0.5s ease';
-    }, 10);
+    if (countEl) {
+        countEl.style.animation = 'none';
+        setTimeout(() => {
+            countEl.style.animation = 'numberPulse 0.5s ease';
+        }, 10);
+    }
 }
 
 function closeRespectBubble() {
