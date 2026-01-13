@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Respect Game - Show Your Respect!</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="game-container">
+        <!-- Header -->
+        <header class="game-header">
+            <div class="header-glow"></div>
+            <h1>🎮 RESPECT GAME 🎮</h1>
+            <p class="subtitle">Tag, Respect, and Compete!</p>
+            <div class="header-particles">
+                <span class="particle">✨</span>
+                <span class="particle">⭐</span>
+                <span class="particle">💫</span>
+                <span class="particle">✨</span>
+                <span class="particle">⭐</span>
+            </div>
+        </header>
+
+        <!-- User Panel -->
+        <div class="user-panel">
+            <div class="current-user">
+                <label for="username">Your Name:</label>
+                <input type="text" id="username" placeholder="Enter your name" maxlength="20">
+                <button id="setUsername" class="btn-primary">Join Game</button>
+            </div>
+            <div id="userDisplay" class="user-display" style="display: none;">
+                <span>Playing as: <strong id="currentUser"></strong></span>
+            </div>
+        </div>
+
+        <!-- Game Area -->
+        <div class="game-area">
+            <!-- Command Input -->
+            <div class="command-section">
+                <h2>💬 Send Commands</h2>
+                <div class="command-input-wrapper">
+                    <input type="text" id="commandInput" placeholder="Type: respect@username or respect_count@username" 
+                           autocomplete="off" disabled>
+                    <button id="sendCommand" class="btn-send" disabled>Send</button>
+                </div>
+                <div class="command-examples">
+                    <p><strong>Examples:</strong></p>
+                    <code>respect@nitin</code> - Give respect to Nitin<br>
+                    <code>respect_count@nitin</code> - Check Nitin's respect count
+                </div>
+            </div>
+
+            <!-- Chat/Activity Feed -->
+            <div class="activity-feed">
+                <h2>📜 Activity Feed</h2>
+                <div id="activityLog" class="activity-log">
+                    <div class="welcome-msg">Welcome to Respect Game! Enter your name and start playing!</div>
+                </div>
+            </div>
+
+            <!-- Leaderboard -->
+            <div class="leaderboard-section">
+                <h2>🏆 Leaderboard</h2>
+                <div id="leaderboard" class="leaderboard">
+                    <div class="no-data">No players yet</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Respect Count Bubble (Hidden by default) -->
+        <div id="respectBubble" class="respect-bubble">
+            <div class="bubble-content">
+                <div class="bubble-header">
+                    <span class="bubble-username"></span>
+                </div>
+                <div class="bubble-count">
+                    <span class="count-number">0</span>
+                    <span class="count-label">RESPECT</span>
+                </div>
+                <div class="bubble-breakdown">
+                    <div class="breakdown-item">
+                        <span class="breakdown-label">++</span>
+                        <span class="breakdown-value positive">0</span>
+                    </div>
+                    <div class="breakdown-item">
+                        <span class="breakdown-label">--</span>
+                        <span class="breakdown-value negative">0</span>
+                    </div>
+                </div>
+                <button class="bubble-close" onclick="closeRespectBubble()">✕</button>
+            </div>
+        </div>
+
+        <!-- Respect Prompt Modal -->
+        <div id="respectModal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3>Give Respect to <span id="targetUser"></span></h3>
+                    <button class="modal-close" onclick="closeRespectModal()">✕</button>
+                </div>
+                <div class="modal-body">
+                    <p>Choose your action:</p>
+                    <div class="respect-actions">
+                        <button class="btn-respect btn-respect-plus" onclick="submitRespect('++')">
+                            <span class="icon">👍</span>
+                            <span>Respect ++</span>
+                        </button>
+                        <button class="btn-respect btn-respect-minus" onclick="submitRespect('--')">
+                            <span class="icon">👎</span>
+                            <span>Respect --</span>
+                        </button>
+                    </div>
+                    <div class="custom-message">
+                        <label>Optional Message:</label>
+                        <textarea id="respectMessage" placeholder="Add a message (optional)" maxlength="100"></textarea>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
