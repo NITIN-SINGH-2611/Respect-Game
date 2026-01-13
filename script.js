@@ -13,7 +13,10 @@ document.addEventListener('DOMContentLoaded', function() {
     // Setup Start Game button
     const startGameBtn = document.getElementById('startGameBtn');
     if (startGameBtn) {
-        startGameBtn.addEventListener('click', startGame);
+        startGameBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            startGame();
+        });
     }
 });
 
@@ -32,13 +35,19 @@ function setupEventListeners() {
 }
 
 function startGame() {
+    console.log('Start Game clicked!');
     const landingPage = document.getElementById('landingPage');
     const gameContent = document.getElementById('gameContent');
     
+    if (!landingPage || !gameContent) {
+        console.error('Landing page or game content not found!');
+        return;
+    }
+    
     // Fade out landing page
-    landingPage.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+    landingPage.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
     landingPage.style.opacity = '0';
-    landingPage.style.transform = 'scale(0.95)';
+    landingPage.style.transform = 'scale(0.9)';
     
     setTimeout(() => {
         landingPage.style.display = 'none';
@@ -46,14 +55,17 @@ function startGame() {
         // Show game content with animation
         gameContent.style.display = 'block';
         gameContent.style.opacity = '0';
-        gameContent.style.transform = 'scale(0.95)';
+        gameContent.style.transform = 'translateY(20px)';
+        
+        // Force reflow
+        gameContent.offsetHeight;
         
         setTimeout(() => {
-            gameContent.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+            gameContent.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
             gameContent.style.opacity = '1';
-            gameContent.style.transform = 'scale(1)';
+            gameContent.style.transform = 'translateY(0)';
         }, 50);
-    }, 500);
+    }, 600);
 }
 
 function setUsername() {

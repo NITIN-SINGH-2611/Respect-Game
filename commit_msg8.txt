@@ -1,0 +1,1 @@
+Redesign landing page and fix Start Game button
