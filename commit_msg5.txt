@@ -1,0 +1,1 @@
+Reduce brightness of header glow and particles

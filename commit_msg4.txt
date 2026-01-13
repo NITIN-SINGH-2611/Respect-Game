@@ -1,1 +1,0 @@
-Fix: Hide sections until username is set
